@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cox: padrão × estratificado × fatorado</title>
+<title>Cox: estratificar × fatorar (cacto & samambaia)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -11,9 +11,9 @@
   :root{
     --bg:#EEF1F4; --panel:#FFFFFF; --ink:#141A21; --muted:#5A6672; --faint:#8A95A1;
     --line:#DCE1E7; --line2:#EAEDF1;
-    --teal:#0F8A8A; --teal-bg:#E6F4F4;
-    --amber:#B9770F; --amber-bg:#F7EEDD;
-    --blue:#2563EB; --red:#DC2626;
+    --sam:#2E7D4F; --sam-bg:#E7F1EA;      /* samambaia */
+    --cac:#B9770F; --cac-bg:#F7EEDD;      /* cacto */
+    --blue:#2563EB; --red:#C0392B;
     --good:#177245; --good-bg:#E5F1EA;
     --warn:#B45309; --warn-bg:#F6ECDC;
     --bad:#B4232A; --bad-bg:#F6E4E4;
@@ -22,24 +22,19 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0}
-  body{
-    background:var(--bg); color:var(--ink);
-    font-family:"Inter",system-ui,sans-serif; line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
+  body{background:var(--bg); color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased;}
   .wrap{max-width:1080px; margin:0 auto; padding:34px 20px 70px}
   .mono{font-family:"JetBrains Mono",monospace; font-variant-numeric:tabular-nums}
   h1,h2,h3{font-family:"Space Grotesk",sans-serif; margin:0; letter-spacing:-0.01em}
 
-  /* header */
   header{margin-bottom:26px}
   .eyebrow{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.14em;
     text-transform:uppercase; color:var(--accent); margin-bottom:10px}
   h1{font-size:clamp(26px,4.4vw,40px); font-weight:600; line-height:1.08}
-  .lede{color:var(--muted); font-size:16px; max-width:60ch; margin-top:12px}
+  .lede{color:var(--muted); font-size:16px; max-width:64ch; margin-top:12px}
   .tag{display:inline-block; font-family:"JetBrains Mono",monospace; font-size:11px;
-    color:var(--faint); border:1px solid var(--line); border-radius:20px;
-    padding:3px 10px; margin-top:14px}
+    color:var(--faint); border:1px solid var(--line); border-radius:20px; padding:3px 10px; margin-top:14px}
 
   section{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
     padding:22px 22px; margin-top:18px}
@@ -49,7 +44,6 @@
   h2{font-size:19px; font-weight:600}
   .sec-sub{color:var(--muted); font-size:14px; margin:6px 0 0}
 
-  /* controls */
   .controls{display:grid; grid-template-columns:1fr 1fr 1fr; gap:22px; margin-top:20px}
   .ctrl label{display:block; font-size:13px; font-weight:600; margin-bottom:2px}
   .ctrl .hint{font-size:12px; color:var(--faint); margin-bottom:10px; min-height:16px}
@@ -61,23 +55,21 @@
     border:3px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.25); cursor:pointer}
   input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%;
     background:var(--accent); border:3px solid #fff; cursor:pointer}
-  .ctrl.jovens input[type=range]::-webkit-slider-thumb{background:var(--teal)}
-  .ctrl.jovens input[type=range]::-moz-range-thumb{background:var(--teal)}
-  .ctrl.fieis input[type=range]::-webkit-slider-thumb{background:var(--amber)}
-  .ctrl.fieis input[type=range]::-moz-range-thumb{background:var(--amber)}
+  .ctrl.sam input[type=range]::-webkit-slider-thumb{background:var(--sam)}
+  .ctrl.sam input[type=range]::-moz-range-thumb{background:var(--sam)}
+  .ctrl.cac input[type=range]::-webkit-slider-thumb{background:var(--cac)}
+  .ctrl.cac input[type=range]::-moz-range-thumb{background:var(--cac)}
 
   .truthbar{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; align-items:center}
   .chip{display:inline-flex; align-items:center; gap:7px; font-size:13px;
     border:1px solid var(--line); border-radius:20px; padding:5px 12px; background:#fff}
   .chip b{font-family:"JetBrains Mono",monospace}
   .dot{width:9px; height:9px; border-radius:50%; flex:none}
-  .dot.j{background:var(--teal)} .dot.f{background:var(--amber)}
+  .dot.s{background:var(--sam)} .dot.c{background:var(--cac)}
   .btn{margin-left:auto; font-family:"Inter",sans-serif; font-size:13px; font-weight:600;
-    color:#fff; background:var(--accent); border:none; border-radius:9px;
-    padding:8px 15px; cursor:pointer}
+    color:#fff; background:var(--accent); border:none; border-radius:9px; padding:8px 15px; cursor:pointer}
   .btn:hover{filter:brightness(1.08)}
 
-  /* model cards */
   .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px}
   .card{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;
     display:flex; flex-direction:column}
@@ -93,66 +85,60 @@
   .assum{border-top:1px solid var(--line2); padding-top:11px}
   .arow{display:flex; align-items:flex-start; gap:9px; font-size:13px; padding:5px 0}
   .arow .ic{width:16px; height:16px; border-radius:50%; flex:none; margin-top:2px;
-    display:grid; place-items:center; font-size:10px; font-weight:700; color:#fff;
-    font-family:"JetBrains Mono",monospace}
+    display:grid; place-items:center; font-size:10px; font-weight:700; color:#fff; font-family:"JetBrains Mono",monospace}
   .ic.ok{background:var(--good)} .ic.no{background:var(--bad)} .ic.mid{background:var(--warn)}
   .arow .lab{color:var(--muted)} .arow .lab b{color:var(--ink); font-weight:600}
   .est{margin-top:14px; border-top:1px dashed var(--line); padding-top:12px}
-  .est .est-lab{font-size:11px; letter-spacing:.05em; text-transform:uppercase;
-    color:var(--faint); margin-bottom:6px}
+  .est .est-lab{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); margin-bottom:6px}
   .hrpair{display:flex; gap:10px; flex-wrap:wrap}
   .hrbox{flex:1; min-width:96px; border:1px solid var(--line); border-radius:9px; padding:8px 10px}
   .hrbox .seg{font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px}
   .hrbox .num{font-family:"JetBrains Mono",monospace; font-size:22px; font-weight:600; line-height:1.1}
   .hrbox .delta{font-family:"JetBrains Mono",monospace; font-size:11px}
-  .verdict{margin-top:13px; font-size:12.5px; font-weight:600; border-radius:8px;
-    padding:8px 11px; display:flex; align-items:center; gap:8px}
+  .verdict{margin-top:13px; font-size:12.5px; font-weight:600; border-radius:8px; padding:8px 11px;
+    display:flex; align-items:center; gap:8px}
   .verdict.good{background:var(--good-bg); color:var(--good)}
   .verdict.mid{background:var(--warn-bg); color:var(--warn)}
   .verdict.bad{background:var(--bad-bg); color:var(--bad)}
 
-  /* insight callout */
   .callout{margin-top:18px; border-left:3px solid var(--accent); background:#F4F5FB;
     border-radius:0 10px 10px 0; padding:15px 18px; font-size:14px}
   .callout b{color:var(--accent)}
 
-  /* plot */
   .toggle{display:inline-flex; background:#EEF1F4; border:1px solid var(--line);
     border-radius:10px; padding:3px; gap:2px; margin-top:16px}
   .toggle button{font-family:"Inter",sans-serif; font-size:13px; font-weight:600;
-    border:none; background:transparent; color:var(--muted); padding:7px 14px;
-    border-radius:7px; cursor:pointer}
+    border:none; background:transparent; color:var(--muted); padding:7px 14px; border-radius:7px; cursor:pointer}
   .toggle button.active{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .panels{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
   .panel{border:1px solid var(--line); border-radius:12px; padding:12px 12px 8px}
-  .panel .phead{display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px;
-    margin:2px 2px 6px}
+  .panel .phead{display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px; margin:2px 2px 6px}
   .panel .phead .badge{font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px}
-  .badge.j{background:var(--teal-bg); color:var(--teal)}
-  .badge.f{background:var(--amber-bg); color:var(--amber)}
+  .badge.s{background:var(--sam-bg); color:var(--sam)}
+  .badge.c{background:var(--cac-bg); color:var(--cac)}
   .panel svg{display:block; width:100%; height:auto}
-  .legend{display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px; font-size:12.5px;
-    color:var(--muted); align-items:center}
+  .legend{display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px; font-size:12.5px; color:var(--muted); align-items:center}
   .lg{display:inline-flex; align-items:center; gap:8px}
   .lg .swatch{width:26px; height:0; border-top-width:3px; border-top-style:solid}
-  .readguide{margin-top:14px; font-size:13px; color:var(--muted); background:#F5F7F9;
-    border-radius:10px; padding:12px 14px}
+  .readguide{margin-top:14px; font-size:13px; color:var(--muted); background:#F5F7F9; border-radius:10px; padding:12px 14px}
   .readguide b{color:var(--ink)}
 
-  /* matrix */
   .matrix{margin-top:18px; border:1px solid var(--line); border-radius:12px; overflow:hidden}
   .mgrid{display:grid; grid-template-columns:150px 1fr 1fr}
-  .mcell{padding:14px 14px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line2);
-    font-size:13px}
+  .mcell{padding:14px 14px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line2); font-size:13px}
   .mcell:nth-child(3n){border-right:none}
-  .mhead{background:#F5F7F9; font-weight:600; font-size:12.5px; color:var(--muted);
-    display:flex; align-items:center}
+  .mhead{background:#F5F7F9; font-weight:600; font-size:12.5px; color:var(--muted); display:flex; align-items:center}
   .mcorner{background:#F0F2F5}
   .mrowlab{background:#F5F7F9; font-weight:600; font-size:12.5px; color:var(--muted); display:flex; align-items:center}
   .mcell .rec{font-weight:600; font-family:"Space Grotesk",sans-serif; font-size:14px}
   .mcell .why{color:var(--faint); font-size:12px; margin-top:3px}
   .mcell.hl{background:#F4F5FB; box-shadow:inset 0 0 0 2px var(--accent)}
   .mcell.hl .rec{color:var(--accent)}
+
+  .bridge{margin-top:18px; background:var(--cac-bg); border:1px solid #EAD9B8;
+    border-radius:12px; padding:16px 18px; font-size:14px}
+  .bridge h3{font-size:15px; margin-bottom:6px; color:#8A5A0B}
+  .bridge b{color:#8A5A0B}
 
   footer{margin-top:26px; color:var(--faint); font-size:12.5px; text-align:center; line-height:1.6}
 
@@ -169,70 +155,70 @@
 
   <header>
     <div class="eyebrow">Análise de sobrevivência · demonstração interativa</div>
-    <h1>Um HR só não serve para todo mundo</h1>
-    <p class="lede">Quando dois segmentos reagem de formas <b>diferentes</b> à <b>mesma</b> variável,
-    estratificar o Cox não basta — ele conserta o risco-base, mas insiste em um único efeito.
-    Fatorar o modelo (um coeficiente por segmento) é o que captura sensibilidades diferentes.
-    Mexa nos controles e veja cada modelo acertar ou errar em tempo real.</p>
-    <span class="tag mono">dados simulados · exemplo: tempo até cancelamento (churn)</span>
+    <h1>Ninguém rega um cacto como uma samambaia</h1>
+    <p class="lede">Um período de seca quase não mexe com um cacto, mas pode ser fatal para uma
+    samambaia — a <b>mesma</b> variável, sensibilidades <b>diferentes</b>. É o mesmo dilema dos
+    nossos modelos. Aqui você vê, com plantas, por que <b>estratificar</b> o Cox conserta o
+    risco-base, mas só <b>fatorar</b> captura sensibilidades diferentes. No fim, a ponte de volta
+    para o crédito.</p>
+    <span class="tag mono">dados simulados · desfecho: tempo até a planta murchar</span>
   </header>
 
   <!-- CENÁRIO -->
   <section>
     <div class="sec-head"><span class="sec-n">01</span><h2>O cenário que você controla</h2></div>
-    <p class="sec-sub">Dois segmentos de clientes e uma única variável: <b>houve aumento de mensalidade?</b>
-    O “efeito” é o quanto o aumento multiplica o risco de cancelar (o hazard ratio, HR).
-    Você define a <i>verdade</i> — o modelo terá que descobri-la a partir dos dados.</p>
+    <p class="sec-sub">Duas plantas e uma única variável: a planta <b>passou por uma seca?</b>
+    O “efeito” é quantas vezes a seca multiplica o risco de murchar (o hazard ratio, HR).
+    Você define a <i>verdade</i> — o modelo terá que descobri-la só a partir dos dados.</p>
 
     <div class="controls">
-      <div class="ctrl jovens">
-        <label>Efeito real nos <span style="color:var(--teal)">Jovens</span>
+      <div class="ctrl sam">
+        <label>Efeito real na <span style="color:var(--sam)">Samambaia</span>
           <span class="val" id="vHrY">HR 3,0×</span></label>
-        <div class="hint">Sensíveis a preço: o aumento pesa muito.</div>
+        <div class="hint">Frágil: a seca pesa muito.</div>
         <input type="range" id="hrY" min="1" max="4" step="0.1" value="3">
       </div>
-      <div class="ctrl fieis">
-        <label>Efeito real nos <span style="color:var(--amber)">Fiéis</span>
+      <div class="ctrl cac">
+        <label>Efeito real no <span style="color:var(--cac)">Cacto</span>
           <span class="val" id="vHrF">HR 1,2×</span></label>
-        <div class="hint">Leais: o aumento quase não muda nada.</div>
+        <div class="hint">Resistente: a seca quase não muda nada.</div>
         <input type="range" id="hrF" min="1" max="4" step="0.1" value="1.2">
       </div>
       <div class="ctrl">
-        <label>Contraste de risco-base
+        <label>Contraste de resistência natural
           <span class="val" id="vBase">2,5×</span></label>
-        <div class="hint">Quão mais “inquietos” os Jovens já são, mesmo sem aumento.</div>
+        <div class="hint">Quanto o cacto já aguenta mais que a samambaia, mesmo bem regado.</div>
         <input type="range" id="base" min="1" max="5" step="0.1" value="2.5">
       </div>
     </div>
 
     <div class="truthbar">
-      <span class="chip"><span class="dot j"></span>Jovens — HR real <b id="cHrY">3,0×</b></span>
-      <span class="chip"><span class="dot f"></span>Fiéis — HR real <b id="cHrF">1,2×</b></span>
-      <span class="chip">Amostra: <b id="cN">340</b> clientes simulados</span>
-      <button class="btn" id="reseed">Gerar nova amostra ↺</button>
+      <span class="chip"><span class="dot s"></span>Samambaia — HR real <b id="cHrY">3,0×</b></span>
+      <span class="chip"><span class="dot c"></span>Cacto — HR real <b id="cHrF">1,2×</b></span>
+      <span class="chip">Amostra: <b id="cN">340</b> plantas simuladas</span>
+      <button class="btn" id="reseed">Plantar nova amostra ↺</button>
     </div>
   </section>
 
   <!-- MODELOS -->
   <section>
     <div class="sec-head"><span class="sec-n">02</span><h2>O que cada modelo estima</h2></div>
-    <p class="sec-sub">Compare o HR estimado por cada abordagem com a verdade que você definiu acima.
-    Repare na coluna “Efeito (HR)”: só o modelo fatorado entrega <b>um número por segmento</b>.</p>
+    <p class="sec-sub">Compare o HR estimado por cada abordagem com a verdade que você definiu.
+    Repare na linha “Efeito da seca”: só o modelo fatorado entrega <b>um HR por planta</b>.</p>
 
     <div class="cards" id="cards"></div>
-
     <div class="callout" id="insight"></div>
   </section>
 
   <!-- CURVAS -->
   <section>
     <div class="sec-head"><span class="sec-n">03</span><h2>Vendo o ajuste: curvas de sobrevivência</h2></div>
-    <p class="sec-sub">Cada painel é um segmento. As linhas <b>azul</b> (sem aumento) e <b>vermelha</b>
-    (com aumento) mostram a fração de clientes que ainda não cancelou ao longo do tempo.
-    A <b>distância</b> entre azul e vermelho <i>é</i> o efeito do aumento naquele segmento.</p>
+    <p class="sec-sub">Cada painel é uma planta. As linhas <b>azul</b> (rega normal) e <b>vermelha</b>
+    (passou por seca) mostram a fração de plantas ainda vivas ao longo do tempo. A <b>distância</b>
+    entre azul e vermelho <i>é</i> o efeito da seca naquela planta.</p>
 
     <div class="toggle" id="toggle">
-      <button data-m="padrao" class="active">Cox padrão</button>
+      <button data-m="padrao" class="active">Cox simples</button>
       <button data-m="estrat">Cox estratificado</button>
       <button data-m="fatorado">Cox fatorado</button>
     </div>
@@ -240,39 +226,56 @@
     <div class="panels" id="panels"></div>
 
     <div class="legend">
-      <span class="lg"><span class="swatch" style="border-color:var(--blue)"></span>Sem aumento</span>
-      <span class="lg"><span class="swatch" style="border-color:var(--red)"></span>Com aumento</span>
+      <span class="lg"><span class="swatch" style="border-color:var(--blue)"></span>Rega normal</span>
+      <span class="lg"><span class="swatch" style="border-color:var(--red)"></span>Passou por seca</span>
       <span class="lg"><span class="swatch" style="border-color:var(--muted); border-top-style:dashed"></span>Realidade (Kaplan-Meier)</span>
       <span class="lg"><span class="swatch" style="border-color:var(--ink)"></span>Ajuste do modelo</span>
     </div>
     <div class="readguide" id="readguide"></div>
   </section>
 
-  <!-- QUANDO USAR -->
+  <!-- QUANDO USAR + PONTE -->
   <section>
-    <div class="sec-head"><span class="sec-n">04</span><h2>Qual modelo usar, afinal?</h2></div>
+    <div class="sec-head"><span class="sec-n">04</span><h2>Qual modelo usar — e a receita prática</h2></div>
     <p class="sec-sub">Depende de duas perguntas independentes. A célula destacada é a do seu cenário atual.</p>
     <div class="matrix">
       <div class="mgrid">
         <div class="mcell mcorner"></div>
-        <div class="mcell mhead">Risco-base parecido<br>entre segmentos</div>
-        <div class="mcell mhead">Risco-base diferente<br>entre segmentos</div>
+        <div class="mcell mhead">Resistência natural<br>parecida</div>
+        <div class="mcell mhead">Resistência natural<br>diferente</div>
 
         <div class="mcell mrowlab">Efeito parecido</div>
-        <div class="mcell" data-cell="ii"><span class="rec">Cox padrão</span><div class="why">Uma curva-base e um HR já descrevem todos.</div></div>
-        <div class="mcell" data-cell="id"><span class="rec">Estratificado</span><div class="why">Basta separar o risco-base; o efeito é comum.</div></div>
+        <div class="mcell" data-cell="ii"><span class="rec">Cox simples</span><div class="why">Uma curva-base e um HR já descrevem todas.</div></div>
+        <div class="mcell" data-cell="id"><span class="rec">Estratificado</span><div class="why">Só o risco-base muda; o efeito é comum.</div></div>
 
         <div class="mcell mrowlab">Efeito diferente</div>
         <div class="mcell" data-cell="di"><span class="rec">Fatorado</span><div class="why">Estratificar não resolve — o efeito precisa variar.</div></div>
-        <div class="mcell" data-cell="dd"><span class="rec">Fatorado</span><div class="why">Risco-base e efeito, ambos por segmento.</div></div>
+        <div class="mcell" data-cell="dd"><span class="rec">Fatorado</span><div class="why">Risco-base e efeito, ambos por grupo.</div></div>
       </div>
+    </div>
+
+    <div class="callout" style="margin-top:18px">
+      <b>A receita quando há muitos grupos:</b> estratifique todos (o risco-base sai “de graça”,
+      sem coeficiente para explicar) e <b>fature só os grupos que passam num teste</b> — razão de
+      verossimilhança ou AIC entre “inclinação comum” e “inclinação por grupo” —, não no olho.
+      Assim você melhora a calibração sem precisar explicar uma interação para cada grupo, e evita
+      ajustar ruído em quem não difere de verdade. Confirme sempre que o ganho se mantém fora da
+      amostra: dentro dela, adicionar parâmetros sempre parece melhorar.
+    </div>
+
+    <div class="bridge">
+      <h3>🌵 De volta ao crédito</h3>
+      Troque <b>planta</b> por <b>segmento</b>, <b>seca</b> por <b>pct_entrada</b> e <b>murchar</b>
+      por <b>inadimplir</b>. Alguns segmentos são <b>cactos</b> — a entrada mexe pouco no risco;
+      outros são <b>samambaias</b> — a entrada muda tudo. Estratifique o risco-base para todos e
+      reserve a interação <span class="mono">segmento × pct_entrada</span> para as samambaias.
     </div>
   </section>
 
   <footer>
-    Dados 100% simulados para fins didáticos. Modelos ajustados por verossimilhança parcial de Cox
-    (Breslow) direto no navegador; “fatorar” aqui = um coeficiente por segmento, equivalente a incluir
-    interações <span class="mono">segmento × variável</span>.
+    Dados 100% simulados, para fins didáticos. Modelos ajustados por verossimilhança parcial de Cox
+    (Breslow) no próprio navegador. “Fatorar” aqui = um coeficiente por grupo, equivalente a incluir
+    a interação <span class="mono">grupo × variável</span>.
   </footer>
 
 </div>
@@ -282,15 +285,16 @@
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 
 const TAU=30, LAMBDA0=0.04, NPS=170;
+const SEGS=['Samambaia','Cacto']; // [alto risco-base + sensível, baixo risco-base + resistente]
 
 function generateData({hrY,hrF,baseContrast}, seed){
   const rnd=mulberry32(seed); const rows=[];
   const bY=Math.log(hrY), bF=Math.log(hrF);
   const lamY=LAMBDA0*Math.sqrt(baseContrast), lamF=LAMBDA0/Math.sqrt(baseContrast);
-  for(const seg of ['Jovens','Fiéis']){
-    const lam=seg==='Jovens'?lamY:lamF; const b=seg==='Jovens'?bY:bF;
+  for(const seg of SEGS){
+    const lam=seg==='Samambaia'?lamY:lamF; const b=seg==='Samambaia'?bY:bF;
     for(let i=0;i<NPS;i++){
-      const x=rnd()<0.5?0:1;
+      const x=rnd()<0.5?0:1;               // 0 = rega normal, 1 = passou por seca
       const rate=lam*Math.exp(b*x);
       const u=Math.max(rnd(),1e-9);
       const T=-Math.log(u)/rate;
@@ -306,7 +310,7 @@ function generateData({hrY,hrF,baseContrast}, seed){
 function fitCox(rows, stratified){
   let beta=0;
   const groups = stratified
-    ? {'Jovens':rows.filter(r=>r.seg==='Jovens'),'Fiéis':rows.filter(r=>r.seg==='Fiéis')}
+    ? {'Samambaia':rows.filter(r=>r.seg==='Samambaia'),'Cacto':rows.filter(r=>r.seg==='Cacto')}
     : {'all':rows};
   for(let iter=0; iter<40; iter++){
     let U=0, I=0;
@@ -363,22 +367,22 @@ let currentModel='padrao';
 
 function compute(){
   const rows=generateData(P,SEED);
-  const y=rows.filter(r=>r.seg==='Jovens'), f=rows.filter(r=>r.seg==='Fiéis');
+  const y=rows.filter(r=>r.seg==='Samambaia'), f=rows.filter(r=>r.seg==='Cacto');
   const bStd=fitCox(rows,false);
   const bStrat=fitCox(rows,true);
   const bY=fitCox(y,false), bF=fitCox(f,false);
   const models={
     padrao:{
-      betaSeg:{'Jovens':bStd,'Fiéis':bStd},
-      H0:{'Jovens':breslow(rows,bStd),'Fiéis':breslow(rows,bStd)}
+      betaSeg:{'Samambaia':bStd,'Cacto':bStd},
+      H0:{'Samambaia':breslow(rows,bStd),'Cacto':breslow(rows,bStd)}
     },
     estrat:{
-      betaSeg:{'Jovens':bStrat,'Fiéis':bStrat},
-      H0:{'Jovens':breslow(y,bStrat),'Fiéis':breslow(f,bStrat)}
+      betaSeg:{'Samambaia':bStrat,'Cacto':bStrat},
+      H0:{'Samambaia':breslow(y,bStrat),'Cacto':breslow(f,bStrat)}
     },
     fatorado:{
-      betaSeg:{'Jovens':bY,'Fiéis':bF},
-      H0:{'Jovens':breslow(y,bY),'Fiéis':breslow(f,bF)}
+      betaSeg:{'Samambaia':bY,'Cacto':bF},
+      H0:{'Samambaia':breslow(y,bY),'Cacto':breslow(f,bF)}
     }
   };
   return {rows,y,f,models,
@@ -388,7 +392,7 @@ function compute(){
 /* ============================ FORMATAÇÃO ============================ */
 const nf=x=>x.toFixed(1).replace('.',',');
 const nf2=x=>x.toFixed(2).replace('.',',');
-function effErr(implY,implF){ // erro médio em log-HR frente à verdade
+function effErr(implY,implF){
   return (Math.abs(Math.log(implY)-Math.log(P.hrY))+Math.abs(Math.log(implF)-Math.log(P.hrF)))/2;
 }
 function rate(err){ return err<0.15?'good': err<0.40?'mid':'bad'; }
@@ -400,53 +404,51 @@ function renderCards(st){
   const errS = effErr(st.hr.estrat, st.hr.estrat);
   const errF = effErr(st.hr.fatoY, st.hr.fatoF);
 
-  const segDot=s=>`<span class="dot ${s==='Jovens'?'j':'f'}"></span>`;
-  const trueOf=s=> s==='Jovens'?P.hrY:P.hrF;
-  const deltaTxt=(impl,tru)=>{ const d=impl/tru; const c=Math.abs(Math.log(d))<0.13?'var(--good)':(Math.abs(Math.log(d))<0.35?'var(--warn)':'var(--bad)');
+  const segDot=s=>`<span class="dot ${s==='Samambaia'?'s':'c'}"></span>`;
+  const trueOf=s=> s==='Samambaia'?P.hrY:P.hrF;
+  const deltaTxt=(impl,tru)=>{ const d=impl/tru;
+    const c=Math.abs(Math.log(d))<0.13?'var(--good)':(Math.abs(Math.log(d))<0.35?'var(--warn)':'var(--bad)');
     return `<span class="delta" style="color:${c}">${d>=1?'+':''}${((d-1)*100).toFixed(0)}% vs real</span>`; };
-
   function hrbox(seg,impl){ const tru=trueOf(seg);
     return `<div class="hrbox"><div class="seg">${segDot(seg)}${seg}</div>
       <div class="num">${nf2(impl)}×</div>${deltaTxt(impl,tru)}</div>`; }
-
   function verdict(cls,txt){ const ic=cls==='good'?'✓':cls==='mid'?'≈':'✕';
     return `<div class="verdict ${cls}"><span>${ic}</span><span>${txt}</span></div>`; }
-
   const arow=(state,label)=>{ const ic=state==='ok'?'ok':state==='no'?'no':'mid';
     const sym=state==='ok'?'✓':state==='no'?'✕':'≈';
     return `<div class="arow"><span class="ic ${ic}">${sym}</span><span class="lab">${label}</span></div>`; };
 
   const cards=[
-    { color:'#7A8794', name:'Cox padrão', kind:'sem separação',
+    { color:'#7A8794', name:'Cox simples', kind:'sem separação',
       formula:'h(t | x) = h<sub>0</sub>(t) · e<sup>βx</sup>',
       rows:[
-        arow(baseOk?'ok':'no', `<b>Risco-base:</b> uma curva para todos`),
-        arow('no', `<b>Efeito (HR):</b> um único valor para todos`)
+        arow(baseOk?'ok':'no', `<b>Resistência natural:</b> uma curva para todas`),
+        arow('no', `<b>Efeito da seca (HR):</b> um único valor para todas`)
       ],
-      est:`<div class="hrpair"><div class="hrbox"><div class="seg">Aplica a ambos</div>
+      est:`<div class="hrpair"><div class="hrbox"><div class="seg">Aplica às duas</div>
         <div class="num">${nf2(st.hr.padrao)}×</div>
-        <span class="delta" style="color:var(--muted)">média forçada dos dois</span></div></div>`,
-      verdict: verdict(rate(errP), rate(errP)==='good'?'Serve: os segmentos reagem igual':'Efeito médio — erra os dois extremos')
+        <span class="delta" style="color:var(--muted)">média forçada das duas</span></div></div>`,
+      verdict: verdict(rate(errP), rate(errP)==='good'?'Serve: as plantas reagem igual':'Efeito médio — erra os dois extremos')
     },
-    { color:'var(--accent)', name:'Cox estratificado', kind:'risco-base por segmento',
+    { color:'var(--accent)', name:'Cox estratificado', kind:'risco-base por planta',
       formula:'h(t | x, g) = h<sub>0</sub><sup>g</sup>(t) · e<sup>βx</sup>',
       rows:[
-        arow('ok', `<b>Risco-base:</b> uma curva por segmento`),
-        arow('no', `<b>Efeito (HR):</b> ainda um único valor <i>(mesmo limite do padrão!)</i>`)
+        arow('ok', `<b>Resistência natural:</b> uma curva por planta`),
+        arow('no', `<b>Efeito da seca (HR):</b> ainda um único valor <i>(mesmo limite do simples!)</i>`)
       ],
-      est:`<div class="hrpair"><div class="hrbox"><div class="seg">Aplica a ambos</div>
+      est:`<div class="hrpair"><div class="hrbox"><div class="seg">Aplica às duas</div>
         <div class="num">${nf2(st.hr.estrat)}×</div>
         <span class="delta" style="color:var(--muted)">continua um HR só</span></div></div>`,
       verdict: verdict(rate(errS), rate(errS)==='good'?'Efeito comum bem estimado':'Conserta o risco-base, não o efeito')
     },
-    { color:'var(--good)', name:'Cox fatorado', kind:'coeficiente por segmento',
+    { color:'var(--good)', name:'Cox fatorado', kind:'coeficiente por planta',
       formula:'h(t | x, g) = h<sub>0</sub><sup>g</sup>(t) · e<sup>β<sub>g</sub>x</sup>',
       rows:[
-        arow('ok', `<b>Risco-base:</b> uma curva por segmento`),
-        arow('ok', `<b>Efeito (HR):</b> um valor por segmento`)
+        arow('ok', `<b>Resistência natural:</b> uma curva por planta`),
+        arow('ok', `<b>Efeito da seca (HR):</b> um valor por planta`)
       ],
-      est:`<div class="hrpair">${hrbox('Jovens',st.hr.fatoY)}${hrbox('Fiéis',st.hr.fatoF)}</div>`,
-      verdict: verdict(rate(errF), rate(errF)==='good'?'Captura a sensibilidade de cada um':'Recupera cada efeito separadamente')
+      est:`<div class="hrpair">${hrbox('Samambaia',st.hr.fatoY)}${hrbox('Cacto',st.hr.fatoF)}</div>`,
+      verdict: verdict(rate(errF), rate(errF)==='good'?'Captura a sensibilidade de cada uma':'Recupera cada efeito separadamente')
     }
   ];
 
@@ -463,22 +465,21 @@ function renderCards(st){
       </div>
     </div>`).join('');
 
-  // Insight dinâmico
   const gap=Math.abs(Math.log(P.hrY)-Math.log(P.hrF));
   const el=document.getElementById('insight');
   if(gap<0.12 && P.baseContrast<1.25){
-    el.innerHTML=`<b>Neste cenário, o Cox padrão já basta.</b> Os dois segmentos têm risco-base
-      parecido e reagem de forma parecida ao aumento — não há heterogeneidade para modelar.
+    el.innerHTML=`<b>Neste cenário, o Cox simples já basta.</b> As duas plantas têm resistência
+      parecida e reagem de forma parecida à seca — não há heterogeneidade para modelar.
       Aumente o contraste ou afaste os HRs reais para ver os modelos se separarem.`;
   } else if(gap<0.12){
     el.innerHTML=`<b>Aqui o estratificado é o suficiente.</b> Os efeitos são parecidos
-      (${nf2(P.hrY)}× e ${nf2(P.hrF)}×), então um HR comum serve — o que muda entre os
-      segmentos é só o risco-base, e é exatamente isso que a estratificação separa.`;
+      (${nf2(P.hrY)}× e ${nf2(P.hrF)}×), então um HR comum serve — o que muda entre as plantas
+      é só a resistência natural, e é exatamente isso que a estratificação separa.`;
   } else {
     el.innerHTML=`<b>O ponto-chave:</b> estratificar deu ao modelo curvas-base separadas,
-      mas ele ainda cospe <b>um HR só</b> (${nf2(st.hr.estrat)}×) para dois efeitos que são
-      de verdade ${nf2(P.hrY)}× e ${nf2(P.hrF)}×. Estratificação ≠ efeitos diferentes.
-      Só fatorando o modelo recuperamos os dois: ${nf2(st.hr.fatoY)}× e ${nf2(st.hr.fatoF)}×.`;
+      mas ele ainda cospe <b>um HR só</b> (${nf2(st.hr.estrat)}×) para dois efeitos que são de
+      verdade ${nf2(P.hrY)}× e ${nf2(P.hrF)}×. Estratificação ≠ sensibilidades diferentes.
+      Só fatorando recuperamos os dois: ${nf2(st.hr.fatoY)}× e ${nf2(st.hr.fatoF)}×.`;
   }
 }
 
@@ -488,12 +489,11 @@ function panelSVG(seg, st){
   const iw=W-m.l-m.r, ih=H-m.t-m.b;
   const X=t=> m.l + (t/TAU)*iw;
   const Y=s=> m.t + (1-s)*ih;
-  const rows = seg==='Jovens'?st.y:st.f;
+  const rows = seg==='Samambaia'?st.y:st.f;
   const model = st.models[currentModel];
   const beta = model.betaSeg[seg];
   const H0 = model.H0[seg];
 
-  // grid + eixos
   let g='';
   [0,.25,.5,.75,1].forEach(s=>{
     g+=`<line x1="${m.l}" y1="${Y(s)}" x2="${W-m.r}" y2="${Y(s)}" stroke="#EAEDF1"/>`;
@@ -502,10 +502,9 @@ function panelSVG(seg, st){
   [0,TAU/2,TAU].forEach(t=>{
     g+=`<text x="${X(t)}" y="${H-14}" text-anchor="middle" font-size="10" fill="#8A95A1" font-family="JetBrains Mono">${t}</text>`;
   });
-  g+=`<text x="${m.l-30}" y="${m.t+ih/2}" font-size="10" fill="#8A95A1" transform="rotate(-90 ${m.l-30} ${m.t+ih/2})" text-anchor="middle" font-family="Inter">% ativos</text>`;
-  g+=`<text x="${m.l+iw/2}" y="${H-1}" font-size="10" fill="#8A95A1" text-anchor="middle" font-family="Inter">tempo</text>`;
+  g+=`<text x="${m.l-30}" y="${m.t+ih/2}" font-size="10" fill="#8A95A1" transform="rotate(-90 ${m.l-30} ${m.t+ih/2})" text-anchor="middle" font-family="Inter">% vivas</text>`;
+  g+=`<text x="${m.l+iw/2}" y="${H-1}" font-size="10" fill="#8A95A1" text-anchor="middle" font-family="Inter">tempo (semanas)</text>`;
 
-  // caminho KM (step) e modelo (grid)
   function kmPath(sub){
     const pts=km(sub); if(pts.length<2) return `M ${X(0)} ${Y(1)} L ${X(TAU)} ${Y(1)}`;
     let d=`M ${X(0)} ${Y(1)}`, prev=1;
@@ -518,12 +517,11 @@ function panelSVG(seg, st){
     return d;
   }
   const sub0=rows.filter(r=>r.x===0), sub1=rows.filter(r=>r.x===1);
-
   const lines=`
     <path d="${kmPath(sub0)}" fill="none" stroke="#2563EB" stroke-width="1.6" stroke-dasharray="4 3" opacity=".55"/>
-    <path d="${kmPath(sub1)}" fill="none" stroke="#DC2626" stroke-width="1.6" stroke-dasharray="4 3" opacity=".55"/>
+    <path d="${kmPath(sub1)}" fill="none" stroke="#C0392B" stroke-width="1.6" stroke-dasharray="4 3" opacity=".55"/>
     <path d="${modelPath(0)}" fill="none" stroke="#2563EB" stroke-width="2.6"/>
-    <path d="${modelPath(1)}" fill="none" stroke="#DC2626" stroke-width="2.6"/>`;
+    <path d="${modelPath(1)}" fill="none" stroke="#C0392B" stroke-width="2.6"/>`;
 
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Curvas de sobrevivência ${seg}">
     ${g}
@@ -536,20 +534,20 @@ function panelSVG(seg, st){
 function renderPlot(st){
   const panels=document.getElementById('panels');
   panels.innerHTML=`
-    <div class="panel"><div class="phead"><span class="badge j">Jovens</span> Sensíveis a preço</div>${panelSVG('Jovens',st)}</div>
-    <div class="panel"><div class="phead"><span class="badge f">Fiéis</span> Leais</div>${panelSVG('Fiéis',st)}</div>`;
+    <div class="panel"><div class="phead"><span class="badge s">Samambaia</span> Frágil</div>${panelSVG('Samambaia',st)}</div>
+    <div class="panel"><div class="phead"><span class="badge c">Cacto</span> Resistente</div>${panelSVG('Cacto',st)}</div>`;
 
   const rg=document.getElementById('readguide');
   const txt={
-    padrao:`<b>Cox padrão:</b> os dois painéis mostram <b>o mesmo ajuste</b> — mesma curva-base e
-      mesma distância azul↔vermelho. Compare com a realidade tracejada: se os segmentos diferem,
+    padrao:`<b>Cox simples:</b> os dois painéis mostram <b>o mesmo ajuste</b> — mesma curva-base e
+      mesma distância azul↔vermelho. Compare com a realidade tracejada: se as plantas diferem,
       o modelo (linhas cheias) não encosta nos dados em pelo menos um dos painéis.`,
-    estrat:`<b>Cox estratificado:</b> agora a <b>forma</b> da curva-base acompanha cada segmento
+    estrat:`<b>Cox estratificado:</b> agora a <b>forma</b> da curva-base acompanha cada planta
       (as linhas cheias grudam melhor no nível dos dados). Mas a <b>distância</b> azul↔vermelho
       é a mesma nos dois painéis — um HR só. Onde a sensibilidade real difere, esse vão fica errado.`,
-    fatorado:`<b>Cox fatorado:</b> curva-base <i>e</i> distância azul↔vermelho ajustadas por segmento.
-      As linhas cheias acompanham a realidade tracejada nos dois painéis — cada segmento com sua
-      própria sensibilidade ao aumento.`
+    fatorado:`<b>Cox fatorado:</b> curva-base <i>e</i> distância azul↔vermelho ajustadas por planta.
+      As linhas cheias acompanham a realidade tracejada nos dois painéis — cada planta com sua
+      própria sensibilidade à seca.`
   };
   rg.innerHTML=txt[currentModel];
 }
@@ -571,7 +569,6 @@ function renderAll(){
   renderCards(st);
   renderPlot(st);
   renderMatrix();
-  // chips verdade
   document.getElementById('cHrY').textContent=nf(P.hrY)+'×';
   document.getElementById('cHrF').textContent=nf(P.hrF)+'×';
   document.getElementById('cN').textContent=(NPS*2);
@@ -580,7 +577,6 @@ function renderAll(){
 let raf=null;
 function schedule(){ if(raf) return; raf=requestAnimationFrame(()=>{ raf=null; renderAll(); }); }
 
-// sliders
 function bindSlider(id, key, labelId, fmt){
   const el=document.getElementById(id);
   el.addEventListener('input',()=>{
@@ -595,7 +591,6 @@ bindSlider('hrY','hrY','vHrY', v=>'HR '+nf(v)+'×');
 bindSlider('hrF','hrF','vHrF', v=>'HR '+nf(v)+'×');
 bindSlider('base','baseContrast','vBase', v=>nf(v)+'×');
 
-// toggle de modelo
 document.querySelectorAll('#toggle button').forEach(b=>{
   b.addEventListener('click',()=>{
     document.querySelectorAll('#toggle button').forEach(x=>x.classList.remove('active'));
@@ -605,7 +600,6 @@ document.querySelectorAll('#toggle button').forEach(b=>{
   });
 });
 
-// nova amostra
 document.getElementById('reseed').addEventListener('click',()=>{
   SEED=(SEED*1103515245+12345)>>>0;
   renderAll();
