@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análise de Sobrevivência de Crédito: Cox Normal × Estratificado × Interações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F0F2F5; --panel:#FFFFFF; --ink:#111827; --muted:#4B5563; --faint:#9CA3AF;
+    --line:#E5E7EB; --line2:#F3F4F6;
+    --classeA:#065F46; --classeA-bg:#D1FAE5;    /* Alta Renda / Alta Fidelidade */
+    --classeB:#1E40AF; --classeB-bg:#DBEAFE;    /* Classe B e abaixo */
+    --blue:#2563EB; --red:#DC2626;
+    --good:#16A34A; --good-bg:#DCFCE7;
+    --warn:#D97706; --warn-bg:#FEF3C7;
+    --bad:#DC2626; --bad-bg:#FEE2E2;
+    --accent:#4F46E5;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg); color:var(--ink);
+    font-family:"Inter",system-ui,sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1140px; margin:0 auto; padding:34px 20px 70px}
+  .mono{font-family:"JetBrains Mono",monospace; font-variant-numeric:tabular-nums}
+  h1,h2,h3{font-family:"Space Grotesk",sans-serif; margin:0; letter-spacing:-0.01em}
+
+  header{margin-bottom:26px}
+  .eyebrow{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); margin-bottom:10px}
+  h1{font-size:clamp(24px,4vw,36px); font-weight:700; line-height:1.1}
+  .lede{color:var(--muted); font-size:16px; max-width:72ch; margin-top:12px}
+  .tag{display:inline-block; font-family:"JetBrains Mono",monospace; font-size:11px;
+    color:var(--muted); background:var(--line2); border:1px solid var(--line); border-radius:20px; padding:3px 10px; margin-top:14px}
+
+  section{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:24px; margin-top:18px; box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:4px}
+  .sec-n{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--accent);
+    border:1px solid var(--accent); border-radius:6px; padding:1px 7px; flex:none}
+  h2{font-size:20px; font-weight:600}
+  .sec-sub{color:var(--muted); font-size:14px; margin:6px 0 0}
+
+  .controls{display:grid; grid-template-columns:1fr 1fr 1fr; gap:22px; margin-top:20px}
+  @media(max-width:768px){ .controls{grid-template-columns:1fr} }
+  .ctrl label{display:block; font-size:13px; font-weight:600; margin-bottom:2px}
+  .ctrl .hint{font-size:12px; color:var(--faint); margin-bottom:10px; min-height:16px}
+  .ctrl .val{font-family:"JetBrains Mono",monospace; font-weight:600; float:right; color:var(--ink)}
+  input[type=range]{width:100%; -webkit-appearance:none; appearance:none; height:5px;
+    background:var(--line); border-radius:5px; outline:none; margin:6px 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none;
+    width:18px; height:18px; border-radius:50%; background:var(--accent);
+    border:3px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.25); cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%;
+    background:var(--accent); border:3px solid #fff; cursor:pointer}
+  
+  .ctrl.clA input[type=range]::-webkit-slider-thumb{background:var(--classeA)}
+  .ctrl.clA input[type=range]::-moz-range-thumb{background:var(--classeA)}
+  .ctrl.clB input[type=range]::-webkit-slider-thumb{background:var(--classeB)}
+  .ctrl.clB input[type=range]::-moz-range-thumb{background:var(--classeB)}
+
+  .truthbar{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; align-items:center}
+  .chip{display:inline-flex; align-items:center; gap:7px; font-size:13px;
+    border:1px solid var(--line); border-radius:20px; padding:5px 12px; background:#fff}
+  .chip b{font-family:"JetBrains Mono",monospace}
+  .dot{width:9px; height:9px; border-radius:50%; flex:none}
+  .dot.a{background:var(--classeA)} .dot.b{background:var(--classeB)}
+  .btn{margin-left:auto; font-family:"Inter",sans-serif; font-size:13px; font-weight:600;
+    color:#fff; background:var(--accent); border:none; border-radius:9px; padding:8px 15px; cursor:pointer}
+  .btn:hover{filter:brightness(1.08)}
+
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px}
+  @media(max-width:900px){ .cards{grid-template-columns:1fr} }
+  .card{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff;
+    display:flex; flex-direction:column; box-shadow:0 4px 6px -1px rgba(0,0,0,0.02)}
+  .card .top{height:4px}
+  .card.normal .top{background:var(--accent)}
+  .card.strat .top{background:var(--warn)}
+  .card.inter .top{background:var(--good)}
+  .card .body{padding:16px 16px 18px; flex:1; display:flex; flex-direction:column}
+  .card h3{font-size:16px; font-weight:600}
+  .card .kind{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--faint);
+    letter-spacing:.06em; text-transform:uppercase; margin-top:2px}
+  .formula{font-family:"JetBrains Mono",monospace; font-size:12px; background:#F8FAFC;
+    border:1px solid var(--line2); border-radius:8px; padding:9px 11px; margin:12px 0 14px;
+    text-align:center; color:#1E293B}
+  .formula sub{font-size:.72em} .formula sup{font-size:.72em}
+  .assum{border-top:1px solid var(--line2); padding-top:11px}
+  .arow{display:flex; align-items:flex-start; gap:9px; font-size:13px; padding:5px 0}
+  .arow .ic{width:16px; height:16px; border-radius:50%; flex:none; margin-top:2px;
+    display:grid; place-items:center; font-size:10px; font-weight:700; color:#fff; font-family:"JetBrains Mono",monospace}
+  .ic.ok{background:var(--good)} .ic.no{background:var(--bad)} .ic.mid{background:var(--warn)}
+  .arow .lab{color:var(--muted)} .arow .lab b{color:var(--ink); font-weight:600}
+  
+  .est{margin-top:auto; border-top:1px dashed var(--line); padding-top:12px}
+  .est .est-lab{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--faint); margin-bottom:6px}
+  .hrpair{display:flex; gap:10px; flex-wrap:wrap}
+  .hrbox{flex:1; min-width:96px; border:1px solid var(--line); border-radius:9px; padding:8px 10px; background:#FDFDFD}
+  .hrbox .seg{font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px}
+  .hrbox .num{font-family:"JetBrains Mono",monospace; font-size:20px; font-weight:600; line-height:1.1; margin-top:2px}
+  .verdict{margin-top:13px; font-size:12.5px; font-weight:600; border-radius:8px; padding:8px 11px;
+    display:flex; align-items:center; gap:8px}
+  .verdict.good{background:var(--good-bg); color:var(--good)}
+  .verdict.mid{background:var(--warn-bg); color:var(--warn)}
+  .verdict.bad{background:var(--bad-bg); color:var(--bad)}
+
+  .callout{margin-top:18px; border-left:3px solid var(--accent); background:#F5F3FF;
+    border-radius:0 10px 10px 0; padding:15px 18px; font-size:14px}
+  .callout b{color:var(--accent)}
+
+  .toggle{display:inline-flex; background:#E5E7EB; border:1px solid var(--line);
+    border-radius:10px; padding:3px; gap:2px; margin-top:16px}
+  .toggle button{font-family:"Inter",sans-serif; font-size:13px; font-weight:600;
+    border:none; background:transparent; color:var(--muted); padding:7px 14px; border-radius:7px; cursor:pointer}
+  .toggle button.active{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  
+  .panels{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
+  @media(max-width:768px){ .panels{grid-template-columns:1fr} }
+  .panel{border:1px solid var(--line); border-radius:12px; padding:16px; background:#FAFAFA}
+  .panel .phead{display:flex; align-items:center; gap:8px; font-weight:600; font-size:14px; margin-bottom:12px}
+  .panel .phead .badge{font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px}
+  .badge.a{background:var(--classeA-bg); color:var(--classeA)}
+  .badge.b{background:var(--classeB-bg); color:var(--classeB)}
+  
+  .graph-placeholder{background:#FFF; border:1px dashed var(--line); border-radius:8px; height:18px; text-align:center; padding:40px 0; color:var(--faint); font-size:13px; font-family:"JetBrains Mono",monospace}
+  .legend{display:flex; flex-wrap:wrap; gap:16px 22px; margin-top:14px; font-size:12.5px; color:var(--muted); align-items:center}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Modelagem de Risco & Sobrevivência</div>
+    <h1>Arquiteturas Cox: Quando Estratificar ou Iterar?</h1>
+    <p class="lede">
+      Simulação de risco de crédito com base na <b>porcentagem de comprometimento de renda</b> para prever o tempo até o <i>default</i> (inadimplência). Descubra as falhas do Cox Tradicional quando premissas de proporcionalidade quebram entre diferentes perfis patrimoniais.
+    </p>
+    <div class="tag">Variável Contínua: % Comprometimento de Renda</div>
+    <div class="tag">Estratificação: Classe A (Muito Ricos) vs. Classes B- ou menor</div>
+  </header>
+
+  <!-- SEÇÃO 1: CONTROLES DA REALIDADE -->
+  <section>
+    <div class="sec-head">
+      <div class="sec-n">01</div>
+      <h2>Parâmetros Fisiológicos do Crédito (Verdade Teórica)</h2>
+    </div>
+    <p class="sec-sub">Altere o impacto real do comprometimento de renda no risco de inadimplência de cada grupo para testar a aderência dos modelos.</p>
+    
+    <div class="controls">
+      <div class="ctrl clA">
+        <label>Efeito na Classe A (Muito Ricos) <span class="val mono" id="vA">1.0</span></label>
+        <div class="hint">Multiplicador de risco por cada +10% de comprometimento de renda.</div>
+        <input type="range" id="paramA" min="0.5" max="3.5" step="0.1" value="1.1">
+      </div>
+      
+      <div class="ctrl clB">
